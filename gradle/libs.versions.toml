@@ -22,7 +22,7 @@ ktor = "2.3.12"
 
 #Kotlin-Serialization
 kotlinSerialization = "1.8.20"
-kotlinxSerializationJson = "1.6.0"
+kotlinxSerializationJson = "1.6.3"
 
 #Decompose
 decompose = "3.1.0"
