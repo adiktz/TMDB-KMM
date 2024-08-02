@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -59,6 +60,9 @@ kotlin {
 
             //Ktor
             implementation(libs.ktor.client.core)
+
+            //Kotlin-Serialization
+            implementation(libs.kotlinx.serialization.json)
         }
         iosMain.dependencies {
             //Ktor
@@ -67,7 +71,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             //Ktor
-            implementation(libs.ktor.client.cio)
+            //implementation(libs.ktor.client.cio)
         }
     }
 }
