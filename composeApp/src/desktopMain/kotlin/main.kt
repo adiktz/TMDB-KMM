@@ -10,14 +10,6 @@ import ravi.gaurav.learning.tmdb.di.initKoinDesktop
 import ravi.gaurav.learning.tmdb.di.platformComponent.DesktopComponent
 import ravi.gaurav.learning.tmdb.navigation.RootComponent
 
-/*fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "TMDB",
-    ) {
-        App()
-    }
-}*/
 
 fun main() {
     val lifecycle = LifecycleRegistry()

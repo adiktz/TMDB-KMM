@@ -62,7 +62,7 @@ kotlin {
             implementation(libs.koin.compose)
 
             //Ktor
-            implementation(libs.ktor.client.core)
+            implementation(libs.bundles.ktor)
 
             //Kotlin-Serialization
             implementation(libs.kotlinx.serialization.json)
@@ -70,6 +70,7 @@ kotlin {
             //Decompose
             implementation(libs.decompose)
             implementation(libs.decompose.extensions.compose)
+            implementation(libs.esenty.lifecycle.coroutine)
         }
         iosMain.dependencies {
             //Ktor
@@ -78,7 +79,7 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             //Ktor
-            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 }
