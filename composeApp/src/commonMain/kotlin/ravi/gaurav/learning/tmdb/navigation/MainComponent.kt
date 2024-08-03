@@ -25,13 +25,25 @@ class MainComponent(
     private val scope = coroutineScope(SupervisorJob())
 
     init {
-        getKtor()
+        getCensoredText()
     }
     fun getKtor() {
         scope.launch(Dispatchers.Main) {
             val response = repo.getKtor()
             response.onSuccess {
                 _text.value = it
+            }
+            response.onFailure {
+                _text.value = it.message ?: "Something went wrong...!!!"
+            }
+        }
+    }
+
+    fun getCensoredText() {
+        scope.launch(Dispatchers.Main) {
+            val response = repo.getCensoredText()
+            response.onSuccess {
+                _text.value = it.result
             }
             response.onFailure {
                 _text.value = it.message ?: "Something went wrong...!!!"

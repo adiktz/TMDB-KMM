@@ -1,31 +1,36 @@
 package ravi.gaurav.learning.tmdb.networking
 
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.request
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
-import io.ktor.http.Parameters
-import io.ktor.http.parametersOf
-import io.ktor.util.toMap
+import io.ktor.http.contentType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import kotlin.reflect.KClass
 
 class NetworkManager(
     val networkClient: NetworkClient
 ) {
 
-    suspend inline fun <reified T>makeRequest(
+    suspend inline fun <reified T> makeRequest(
         url: String,
         method: HttpMethod = HttpMethod.Get,
-        parameters: Parameters = parametersOf()
+        parameters: Map<String, Any> = mapOf(),
+        body: Any? = null
     ): Result<T> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = networkClient.client.get(urlString = url) {
-                    parameters.forEach { key, value ->
-                        this.parameter(key, value)
+                val response = networkClient.client.request(url) {
+                    this.method = method
+                    parameters.entries.forEach {
+                        this.parameter(it.key, it.value)
+                    }
+                    if (method == HttpMethod.Get && body != null) {
+                        contentType(ContentType.Application.Json)
+                        setBody(body)
                     }
                 }
                 Result.success(response.body())
@@ -36,13 +41,11 @@ class NetworkManager(
     }
 
 
-    internal suspend inline fun <reified T>get(
+    internal suspend inline fun <reified T> get(
         url: String,
         parameters: Map<String, Any> = mapOf()
     ): Result<T> {
-        return withContext(Dispatchers.Main) {
-            makeRequest(url, HttpMethod.Get, parameters as Parameters)
-        }
+        return makeRequest(url, HttpMethod.Get, parameters)
     }
 
 }

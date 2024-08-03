@@ -44,6 +44,7 @@ kotlin {
 
             //Ktor
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.slf4j.android)
 
             //Decompose
             implementation(libs.decompose)

@@ -7,18 +7,23 @@ import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.RedirectResponseException
 import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
 
 class NetworkClient(
     engine: HttpClientEngine
 ) {
+    @OptIn(ExperimentalSerializationApi::class)
     val client: HttpClient = HttpClient(engine) {
         install(Logging) {
+            logger = Logger.DEFAULT
             level = LogLevel.ALL
         }
         install(ContentNegotiation) {
@@ -26,6 +31,7 @@ class NetworkClient(
                 json = Json {
                     ignoreUnknownKeys = true
                     prettyPrint = true
+                    explicitNulls = false
                 }
             )
         }

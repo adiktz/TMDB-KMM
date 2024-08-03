@@ -11,4 +11,6 @@ class Repository(
     private val service: Service
 ) {
     suspend fun getKtor(): Result<String> = service.getKtor()
+
+    suspend fun getCensoredText(text: String = "What The Fuck?") = service.getCensoredText(text)
 }
