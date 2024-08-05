@@ -10,9 +10,6 @@ import kotlinx.coroutines.launch
 class Repository(
     private val service: Service
 ) {
-    suspend fun getKtor(): Result<String> = service.getKtor()
 
-    suspend fun getCensoredText(text: String = "What The Fuck?") = service.getCensoredText(text)
-
-    suspend fun getPopularMovies() = service.getPopularMovies()
+    suspend fun getPopularMovies(pageNumber: Long = 1) = service.getPopularMovies(pageNumber)
 }

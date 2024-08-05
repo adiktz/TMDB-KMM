@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import kotlinx.serialization.Serializable
+import ravi.gaurav.learning.tmdb.domain.Movie
 
 class RootComponent(
     componentContext: ComponentContext
@@ -26,13 +27,13 @@ class RootComponent(
         context: ComponentContext
     ): Child = when (config) {
         is Config.Main -> Child.Main(
-            MainComponent(context) { id ->
-                navigator.pushNew(Config.Detail(id))
+            MainComponent(context) { movie ->
+                navigator.pushNew(Config.Detail(movie))
             }
         )
 
         is Config.Detail -> Child.Detail(
-            DetailComponent(context, config.id) {
+            DetailComponent(context, config.movie) {
                 navigator.pop()
             }
         )
@@ -49,6 +50,6 @@ class RootComponent(
         data object Main : Config()
 
         @Serializable
-        data class Detail(val id: String) : Config()
+        data class Detail(val movie: Movie) : Config()
     }
 }

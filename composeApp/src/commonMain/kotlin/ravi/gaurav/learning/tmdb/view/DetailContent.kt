@@ -26,7 +26,7 @@ fun DetailContent(
     component: DetailComponent,
     modifier: Modifier = Modifier
 ) {
-    val text = remember {  component.id }
+    val movie = remember { component.movie }
     Column(
         modifier = modifier.fillMaxSize()
             .padding(10.dp),
@@ -34,7 +34,7 @@ fun DetailContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "On Detail Screen with id: $text",
+            text = "${movie.title}",
             modifier = Modifier.fillMaxWidth()
                 .padding(16.dp)
         )
