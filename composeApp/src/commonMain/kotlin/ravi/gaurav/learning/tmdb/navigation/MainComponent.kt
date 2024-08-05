@@ -2,8 +2,6 @@ package ravi.gaurav.learning.tmdb.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
@@ -15,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ravi.gaurav.learning.tmdb.api.Repository
+import ravi.gaurav.learning.tmdb.BuildKonfig
 
 class MainComponent(
     componentContext: ComponentContext,
@@ -33,6 +32,7 @@ class MainComponent(
 
     init {
         getCensoredText()
+        println(BuildKonfig.AUTH_TOKEN)
     }
     fun getKtor() {
         scope.launch(Dispatchers.Main) {

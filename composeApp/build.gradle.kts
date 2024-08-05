@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,6 +10,21 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildKonfig)
+}
+
+buildkonfig {
+    packageName = "ravi.gaurav.learning.tmdb"
+
+    defaultConfigs {
+        val authToken: String = gradleLocalProperties(rootDir).getProperty("AUTH_TOKEN")
+
+        require(authToken.isNotEmpty()) {
+            "Register your api key from developer and place it in local.properties as `AUTH_TOKEN`"
+        }
+
+        buildConfigField(FieldSpec.Type.STRING, "AUTH_TOKEN", authToken)
+    }
 }
 
 kotlin {
