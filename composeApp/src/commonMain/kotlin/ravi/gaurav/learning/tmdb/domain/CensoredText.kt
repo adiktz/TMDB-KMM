@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CensoredText(
-    val result: String = ""
+    val result: String = "",
+    val error: String? = null
 )

@@ -2,11 +2,15 @@ package ravi.gaurav.learning.tmdb.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,6 +28,9 @@ class MainComponent(
 
     private val scope = coroutineScope(SupervisorJob())
 
+    private var _channel = Channel<String>(Channel.CONFLATED)
+    val channel get() = _channel.receiveAsFlow()
+
     init {
         getCensoredText()
     }
@@ -34,29 +41,32 @@ class MainComponent(
                 _text.value = it
             }
             response.onFailure {
-                _text.value = it.message ?: "Something went wrong...!!!"
+                _channel.trySend(it.message ?: "Something went wrong...!!!")
             }
         }
     }
 
-    fun getCensoredText() {
+    private fun getCensoredText() {
         scope.launch(Dispatchers.Main) {
             val response = repo.getCensoredText()
             response.onSuccess {
                 _text.value = it.result
+                if (it.result.isEmpty()) {
+                    _channel.trySend(it.error ?: "Error hogaya in 200...")
+                }
             }
             response.onFailure {
-                _text.value = it.message ?: "Something went wrong...!!!"
+                _channel.trySend(it.message ?: "Something went wrong...!!!")
             }
         }
     }
 
     fun onEvent(event: MainEvent) {
         when (event) {
-            is MainEvent.showDetails -> {
+            is MainEvent.ShowDetails -> {
                 showDetails(text.value)
             }
-            is MainEvent.update -> {
+            is MainEvent.Update -> {
                 _text.value = event.id
             }
         }
@@ -64,6 +74,6 @@ class MainComponent(
 }
 
 sealed interface MainEvent {
-    data class update(val id: String) : MainEvent
-    data object showDetails : MainEvent
+    data class Update(val id: String) : MainEvent
+    data object ShowDetails : MainEvent
 }

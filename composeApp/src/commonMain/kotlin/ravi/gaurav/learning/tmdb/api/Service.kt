@@ -1,11 +1,10 @@
 package ravi.gaurav.learning.tmdb.api
 
-import io.ktor.http.parameters
 import ravi.gaurav.learning.tmdb.domain.CensoredText
 import ravi.gaurav.learning.tmdb.networking.NetworkManager
 
 class Service(
-    val networkManager: NetworkManager
+    private val networkManager: NetworkManager
 ) {
 
     suspend fun getKtor(): Result<String> {
