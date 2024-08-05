@@ -38,6 +38,7 @@ class NetworkClient(
                     ignoreUnknownKeys = true
                     prettyPrint = true
                     explicitNulls = false
+                    coerceInputValues = true
                 }
             )
         }

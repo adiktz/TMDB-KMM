@@ -1,5 +1,6 @@
 package ravi.gaurav.learning.tmdb.navigation
 
+import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ravi.gaurav.learning.tmdb.api.Repository
@@ -20,32 +23,48 @@ class MainComponent(
 ) : ComponentContext by componentContext, KoinComponent {
 
     private val repo: Repository by inject()
-
+    private val mutex = Mutex()
 
     private val scope = coroutineScope(SupervisorJob())
 
     private var _channel = Channel<String>(Channel.CONFLATED)
     val channel get() = _channel.receiveAsFlow()
 
-    private var pageNumber:Long =  1
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading get() = _isLoading.asStateFlow()
+
+    private var pageNumber:Long =  0
     private var _movies: MutableStateFlow<List<Movie>> = MutableStateFlow(arrayListOf())
     val movies = _movies.asStateFlow()
 
     init {
-        getPopularMovies()
+        loadMorePopularMovies()
     }
 
     private fun getPopularMovies() {
+        _isLoading.value = true
         scope.launch {
             val response = repo.getPopularMovies(pageNumber)
             response.onSuccess { movieResponse ->
-                pageNumber = movieResponse.page
-                _movies.update { it + movieResponse.results }
+                mutex.withLock {
+                    pageNumber = movieResponse.page
+                    _movies.value += movieResponse.results
+                    _isLoading.value = false
+                }
             }
             response.onFailure {
+                _isLoading.value = false
                 println(it.message)
             }
         }
+    }
+
+    fun loadMorePopularMovies() {
+        if (!isLoading.value) {
+            pageNumber += 1
+            getPopularMovies()
+        }
+
     }
     fun onEvent(event: MainEvent) {
         when (event) {

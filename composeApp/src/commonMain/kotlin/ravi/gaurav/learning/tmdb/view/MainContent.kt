@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +35,9 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.coroutines.repeatOnLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
 import ravi.gaurav.learning.tmdb.navigation.MainEvent
 
@@ -79,7 +82,7 @@ fun MainContent(
                     textAlign = TextAlign.Center
                 )
             }
-            items(movies) { movie ->
+            itemsIndexed(movies) { index: Int, movie: Movie ->
                 Text(
                     movie.title,
                     modifier = Modifier.fillMaxWidth()
@@ -88,7 +91,14 @@ fun MainContent(
                         .clickable { component.onEvent(MainEvent.ShowDetails(movie)) }
                 )
 
+                // Trigger next page load when the user scrolls near the end
+                if (index >= movies.size - 4) {
+                    LaunchedEffect(index) {
+                        component.loadMorePopularMovies()
+                    }
+                }
             }
+
         }
     }
 }
