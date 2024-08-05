@@ -13,4 +13,6 @@ class Repository(
     suspend fun getKtor(): Result<String> = service.getKtor()
 
     suspend fun getCensoredText(text: String = "What The Fuck?") = service.getCensoredText(text)
+
+    suspend fun getPopularMovies() = service.getPopularMovies()
 }

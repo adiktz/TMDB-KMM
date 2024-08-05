@@ -2,6 +2,7 @@ package ravi.gaurav.learning.tmdb.api
 
 import ravi.gaurav.learning.tmdb.domain.CensoredText
 import ravi.gaurav.learning.tmdb.networking.NetworkManager
+import ravi.gaurav.learning.tmdb.util.Constants
 
 class Service(
     private val networkManager: NetworkManager
@@ -15,5 +16,10 @@ class Service(
         val url = "https://www.purgomalum.com/service/json"
         val parameter: Map<String,String> = mapOf("text" to text)
         return networkManager.get<CensoredText>(url, parameter)
+    }
+
+    suspend fun getPopularMovies(): Result<String> {
+        val url = Constants.movie + Constants.popular
+        return networkManager.get(url)
     }
 }

@@ -2,7 +2,6 @@ package ravi.gaurav.learning.tmdb.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +12,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ravi.gaurav.learning.tmdb.api.Repository
-import ravi.gaurav.learning.tmdb.BuildKonfig
 
 class MainComponent(
     componentContext: ComponentContext,
@@ -31,36 +29,20 @@ class MainComponent(
     val channel get() = _channel.receiveAsFlow()
 
     init {
-        getCensoredText()
-        println(BuildKonfig.AUTH_TOKEN)
+        getPopularMovies()
     }
-    fun getKtor() {
-        scope.launch(Dispatchers.Main) {
-            val response = repo.getKtor()
+
+    private fun getPopularMovies() {
+        scope.launch {
+            val response = repo.getPopularMovies()
             response.onSuccess {
                 _text.value = it
             }
             response.onFailure {
-                _channel.trySend(it.message ?: "Something went wrong...!!!")
+                println(it.message)
             }
         }
     }
-
-    private fun getCensoredText() {
-        scope.launch(Dispatchers.Main) {
-            val response = repo.getCensoredText()
-            response.onSuccess {
-                _text.value = it.result
-                if (it.result.isEmpty()) {
-                    _channel.trySend(it.error ?: "Error hogaya in 200...")
-                }
-            }
-            response.onFailure {
-                _channel.trySend(it.message ?: "Something went wrong...!!!")
-            }
-        }
-    }
-
     fun onEvent(event: MainEvent) {
         when (event) {
             is MainEvent.ShowDetails -> {

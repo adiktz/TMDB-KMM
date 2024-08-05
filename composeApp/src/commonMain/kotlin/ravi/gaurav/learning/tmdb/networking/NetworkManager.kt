@@ -18,7 +18,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
 class NetworkManager(
-    val networkClient: NetworkClient
+    private val networkClient: NetworkClient
 ) {
 
     private suspend fun <T> makeRequest(
