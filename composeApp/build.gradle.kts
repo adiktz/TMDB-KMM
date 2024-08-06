@@ -90,6 +90,8 @@ kotlin {
             implementation(libs.decompose.extensions.compose)
             api(libs.esenty.lifecycle.coroutine)
 
+            implementation(libs.kamel.image)
+
         }
         iosMain.dependencies {
             //Ktor

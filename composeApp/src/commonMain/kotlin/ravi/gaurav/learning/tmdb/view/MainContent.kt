@@ -23,10 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.essenty.lifecycle.coroutines.repeatOnLifecycle
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.flow.Flow
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
 import ravi.gaurav.learning.tmdb.navigation.MainEvent
+import ravi.gaurav.learning.tmdb.util.Constants
 
 
 @Composable
@@ -60,6 +63,10 @@ fun MainContent(
                     GridItemSpan(maxLineSpan)
                 }
             ) {
+                KamelImage(
+                    resource = asyncPainterResource("https://image.tmdb.org/t/p/original/bOGkgRGdhrBYJSLpXaxhXVstddV.jpg"),
+                    contentDescription = null
+                )
                 Text(
                     "Popular Movies",
                     fontWeight = FontWeight.Bold,
@@ -70,6 +77,10 @@ fun MainContent(
                 )
             }
             itemsIndexed(movies) { index: Int, movie: Movie ->
+                KamelImage(
+                    resource = asyncPainterResource(Constants.posterBaseUrl + movie.posterPath),
+                    contentDescription = null
+                )
                 Text(
                     movie.title,
                     modifier = Modifier.fillMaxWidth()
