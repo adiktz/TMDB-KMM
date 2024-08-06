@@ -88,7 +88,8 @@ kotlin {
             //Decompose
             implementation(libs.decompose)
             implementation(libs.decompose.extensions.compose)
-            implementation(libs.esenty.lifecycle.coroutine)
+            api(libs.esenty.lifecycle.coroutine)
+
         }
         iosMain.dependencies {
             //Ktor
@@ -99,6 +100,7 @@ kotlin {
             //Ktor
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.simple)
+            implementation(libs.kotlinx.coroutines.swing)
         }
     }
 }

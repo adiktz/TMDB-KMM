@@ -13,8 +13,10 @@ import ravi.gaurav.learning.tmdb.navigation.RootComponent
 
 
 fun main() {
-    val lifecycle = LifecycleRegistry()
+
     initKoinDesktop(appComponent = DesktopComponent())
+
+    val lifecycle = LifecycleRegistry()
 
     val root =
         runOnUiThread {

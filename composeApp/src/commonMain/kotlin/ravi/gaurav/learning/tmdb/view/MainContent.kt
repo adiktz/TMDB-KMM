@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.essenty.lifecycle.coroutines.repeatOnLifecycle
+import kotlinx.coroutines.flow.Flow
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
 import ravi.gaurav.learning.tmdb.navigation.MainEvent
@@ -35,13 +37,13 @@ fun MainContent(
 
     val movies by component.movies.collectAsState()
 
-    /*ObserveErrorWhenStarted(
+    ObserveErrorWhenStarted(
         component = component,
         flow = component.channel
     ) {
         println("Error ==> $it")
         component.onEvent(MainEvent.Update(it))
-    }*/
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -88,7 +90,7 @@ fun MainContent(
     }
 }
 
-/*@Composable
+@Composable
 fun ObserveErrorWhenStarted(
     component: MainComponent,
     flow: Flow<String>,
@@ -101,4 +103,4 @@ fun ObserveErrorWhenStarted(
             }
         }
     }
-}*/
+}

@@ -58,6 +58,7 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-core-jvm = { module = "io.insert-koin:koin-core-jvm" }
 
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesCore" }
 #KTOR
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
