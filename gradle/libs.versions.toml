@@ -19,6 +19,7 @@ buildKonfig = "0.11.0"
 koin-bom = "4.0.0-RC1"
 
 #Ktor
+kotlinxCoroutinesCore = "1.9.0-RC"
 ktor = "2.3.12"
 
 #Kotlin-Serialization
@@ -51,11 +52,14 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
+koin-core-coroutine = { module = "io.insert-koin:koin-core-coroutines"}
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-core-jvm = { module = "io.insert-koin:koin-core-jvm" }
 
 #KTOR
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
@@ -74,6 +78,7 @@ esenty-lifecycle-coroutine = { module = "com.arkivanov.essenty:lifecycle-corouti
 
 #Logging
 slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4j_version" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j_version" }
 
 
 

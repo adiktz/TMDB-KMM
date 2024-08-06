@@ -6,6 +6,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import org.koin.mp.KoinPlatform.getKoin
 import ravi.gaurav.learning.tmdb.di.initKoinDesktop
 import ravi.gaurav.learning.tmdb.di.platformComponent.DesktopComponent
 import ravi.gaurav.learning.tmdb.navigation.RootComponent
@@ -13,15 +14,16 @@ import ravi.gaurav.learning.tmdb.navigation.RootComponent
 
 fun main() {
     val lifecycle = LifecycleRegistry()
+    initKoinDesktop(appComponent = DesktopComponent())
 
     val root =
         runOnUiThread {
             RootComponent(
-                componentContext = DefaultComponentContext(lifecycle = lifecycle),
+                componentContext = DefaultComponentContext(lifecycle = lifecycle)
             )
         }
 
-    initKoinDesktop(appComponent = DesktopComponent())
+
     application {
         val windowState = rememberWindowState()
 

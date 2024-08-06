@@ -98,6 +98,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             //Ktor
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.slf4j.simple)
         }
     }
 }

@@ -1,6 +1,5 @@
 package ravi.gaurav.learning.tmdb.navigation
 
-import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -8,21 +7,19 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.mp.KoinPlatform.getKoin
 import ravi.gaurav.learning.tmdb.api.Repository
 import ravi.gaurav.learning.tmdb.domain.Movie
 
 class MainComponent(
     componentContext: ComponentContext,
+    private val repo: Repository = getKoin().get(),
     val showDetails: (Movie) -> Unit
-) : ComponentContext by componentContext, KoinComponent {
+) : ComponentContext by componentContext {
 
-    private val repo: Repository by inject()
     private val mutex = Mutex()
 
     private val scope = coroutineScope(SupervisorJob())

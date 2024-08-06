@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import ravi.gaurav.learning.tmdb.domain.Movie
 
 class RootComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
 ) : ComponentContext by componentContext {
 
     private val navigator = StackNavigation<Config>()
