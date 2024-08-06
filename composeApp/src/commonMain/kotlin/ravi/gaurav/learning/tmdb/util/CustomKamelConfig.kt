@@ -25,7 +25,7 @@ val customKamelConfig = KamelConfig {
     takeFrom(KamelConfig.Default)
 
     // Sets the number of images to cache
-    imageBitmapCacheSize = DefaultCacheSize
+    imageBitmapCacheSize = 10000//DefaultCacheSize
 
     // adds an ImageBitmapDecoder
     imageBitmapDecoder()
@@ -44,7 +44,7 @@ val customKamelConfig = KamelConfig {
         // httpCache is defined in kamel-core and configures the ktor client
         // to install a HttpCache feature with the implementation provided by Kamel.
         // The size of the cache can be defined in Bytes.
-        httpCache(100 * 1024 * 1024  /* 10 MiB */)
+        httpCache(200 * 1024 * 1024  /* 10 MiB */)
 
 //        defaultRequest {
 //            url(Constants.imageBaseUrl)
@@ -61,7 +61,7 @@ val customKamelConfig = KamelConfig {
         // Requires adding "io.ktor:ktor-client-logging:$ktor_version"
         install(Logging) {
             logger = Logger.DEFAULT
-            level = LogLevel.ALL
+            level = LogLevel.INFO
         }
     }
 

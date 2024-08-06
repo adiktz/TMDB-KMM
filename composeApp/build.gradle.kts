@@ -65,6 +65,8 @@ kotlin {
 
             //Decompose
             implementation(libs.decompose)
+
+            implementation(libs.kamel.image)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -73,6 +75,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            implementation(compose.materialIconsExtended)
 
             //Koin
             implementation(project.dependencies.platform(libs.koin.bom))
