@@ -93,7 +93,7 @@ fun MainContent(
         AnimatedVisibility(movies.isNotEmpty()) {
             LazyVerticalStaggeredGrid(
                 modifier = modifier,
-                columns = StaggeredGridCells.Adaptive(200.dp),
+                columns = StaggeredGridCells.Adaptive(198.dp),
                 state = lazyStaggeredGridState,
                 contentPadding = PaddingValues(5.dp),
                 verticalItemSpacing = 5.dp,

@@ -2,13 +2,8 @@ package ravi.gaurav.learning.tmdb.networking
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.HttpResponseValidator
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -16,6 +11,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -45,6 +41,12 @@ class NetworkClient(
         defaultRequest {
             header("Authorization", "Bearer ${BuildKonfig.AUTH_TOKEN}")
             url(Constants.baseUrl)
+        }
+        install(HttpRequestRetry) {
+            maxRetries = 3
+            retryIf { httpRequest, httpResponse ->
+                !httpResponse.status.isSuccess()
+            }
         }
         expectSuccess = true
         HttpResponseValidator {
