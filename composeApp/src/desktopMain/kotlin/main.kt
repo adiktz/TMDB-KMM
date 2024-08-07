@@ -26,19 +26,18 @@ fun main() {
     val koin = initKoinDesktop(
         additionalModules = listOf(
             module { single { DesktopComponent()} },
-            module { single<ComponentContext> { DefaultComponentContext(lifecycle) } },
-            module { single<RootComponent> { RootComponent(get()) } }
+        //    module { single<ComponentContext> { DefaultComponentContext(lifecycle) } },
         )
     )
 
 //    val lifecycle = LifecycleRegistry()
 
-    /*val root =
+    val root =
         runOnUiThread {
             RootComponent(
-                componentContext = koin.get()
+                componentContext = DefaultComponentContext(lifecycle)
             )
-        }*/
+        }
 
 
     application {
@@ -53,7 +52,7 @@ fun main() {
         ) {
             MaterialTheme {
                 Surface {
-                    App(root = koin.get())
+                    App(root = root)
                 }
             }
         }

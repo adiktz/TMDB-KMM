@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -34,15 +35,16 @@ class MainComponent(
     private var _movies: MutableStateFlow<List<Movie>> = MutableStateFlow(arrayListOf())
     val movies = _movies.asStateFlow()
 
-
     private fun getPopularMovies() {
-        _isLoading.value = true
+        if (isLoading.value) return
         scope.launch {
+            _isLoading.value = true
             val response = repo.getPopularMovies(pageNumber)
             response.onSuccess { movieResponse ->
                 mutex.withLock {
                     pageNumber = movieResponse.page
                     _movies.value += movieResponse.results
+                    delay(400)
                     _isLoading.value = false
                 }
             }
@@ -54,11 +56,14 @@ class MainComponent(
     }
 
     fun loadMorePopularMovies() {
-        if (!isLoading.value) {
-            pageNumber += 1
-            getPopularMovies()
+        scope.launch {
+            mutex.withLock {
+                if (!isLoading.value) {
+                    pageNumber += 1
+                    getPopularMovies()
+                }
+            }
         }
-
     }
     fun onEvent(event: MainEvent) {
         when (event) {

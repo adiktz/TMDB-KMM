@@ -1,28 +1,18 @@
 package ravi.gaurav.learning.tmdb.view
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -39,12 +29,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.essenty.lifecycle.coroutines.repeatOnLifecycle
@@ -52,7 +40,6 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.DEFAULT
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
@@ -61,9 +48,7 @@ import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.OS
 import ravi.gaurav.learning.tmdb.util.RatingBar
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
-import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
 import ravi.gaurav.learning.tmdb.util.getSystemInsetsHelper
-import ravi.gaurav.learning.tmdb.util.safeCutOutPadding
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
 
 
@@ -87,6 +72,12 @@ fun MainContent(
         component.onEvent(MainEvent.Update(it))
     }
 
+    LaunchedEffect(movies) {
+        if (movies.isEmpty()) {
+            component.loadMorePopularMovies()
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize()
             .then(
@@ -101,7 +92,6 @@ fun MainContent(
     ) {
 
         AnimatedVisibility(movies.isEmpty()) {
-            component.loadMorePopularMovies()
             Column(
                 modifier = Modifier.fillMaxSize()
                     .padding(20.dp),
@@ -127,13 +117,7 @@ fun MainContent(
                 verticalItemSpacing = 5.dp,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                /*item {
-                    Spacer(
-                        Modifier.windowInsetsTopHeight(
-                            WindowInsets.statusBars
-                        )
-                    )
-                }*/
+
                 item(
                     span = StaggeredGridItemSpan.FullLine
                 ) {
@@ -230,19 +214,17 @@ fun MovieItem(
 
     Card(
         onClick = { onClick() },
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.wrapContentHeight()
     ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
+            modifier = Modifier
+                .wrapContentHeight()
         ) {
             KamelImage(
                 resource = asyncPainterResource(Constants.posterBaseUrl + movie.posterPath),
                 contentDescription = null,
-                modifier = modifier.fillMaxWidth(),
-                //    .height(270.dp),
-                //   .heightIn(260.dp, 300.dp),
+                modifier = modifier.fillMaxWidth()
+                    .defaultMinSize(minHeight = 200.dp),
                 contentScale = ContentScale.FillWidth,
             )
             Text(
