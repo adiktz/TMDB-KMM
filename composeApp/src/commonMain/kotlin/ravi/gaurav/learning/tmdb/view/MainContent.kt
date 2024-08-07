@@ -1,5 +1,6 @@
 package ravi.gaurav.learning.tmdb.view
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,12 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +28,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +54,7 @@ fun MainContent(
 ) {
 
     val movies by component.movies.collectAsState()
+    val isLoading by component.isLoading.collectAsState()
 
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
@@ -63,29 +72,89 @@ fun MainContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Adaptive(200.dp),
-            state = lazyStaggeredGridState,
-            contentPadding = PaddingValues(5.dp),
-            verticalItemSpacing = 5.dp,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
+        AnimatedVisibility(movies.isEmpty()) {
+            component.loadMorePopularMovies()
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = "Loading...",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(10.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
 
-            itemsIndexed(
-                movies
-            ) { index: Int, movie: Movie ->
+        AnimatedVisibility(movies.isNotEmpty()) {
+            LazyVerticalStaggeredGrid(
+                modifier = modifier,
+                columns = StaggeredGridCells.Adaptive(200.dp),
+                state = lazyStaggeredGridState,
+                contentPadding = PaddingValues(5.dp),
+                verticalItemSpacing = 5.dp,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                item(
+                    span = StaggeredGridItemSpan.FullLine
+                ) {
+                    Header("Popular Movies", modifier = Modifier)
+                }
 
-                MovieItem(movie = movie) { component.onEvent(MainEvent.ShowDetails(movie)) }
+                itemsIndexed(
+                    movies
+                ) { index: Int, movie: Movie ->
 
-                // Trigger next page load when the user scrolls near the end
-                if (index >= movies.size - 4) {
-                    LaunchedEffect(index) {
-                        component.loadMorePopularMovies()
+                    MovieItem(movie = movie) { component.onEvent(MainEvent.ShowDetails(movie)) }
+
+                    // Trigger next page load when the user scrolls near the end
+                    if (index >= movies.size - 1) {
+                        LaunchedEffect(index) {
+                            component.loadMorePopularMovies()
+                        }
                     }
                 }
-            }
 
+                if (isLoading) {
+                    item(
+                        span = StaggeredGridItemSpan.FullLine
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(20.dp)
+                                .navigationBarsPadding(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+
+            }
         }
+    }
+}
+
+@Composable
+private fun Header(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(Modifier.statusBarsPadding())
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(10.dp),
+            textAlign = TextAlign.Left
+        )
     }
 }
 
@@ -126,16 +195,18 @@ fun MovieItem(
                 contentDescription = null,
                 modifier = modifier.fillMaxWidth(),
                 //    .height(270.dp),
-                 //   .heightIn(260.dp, 300.dp),
+                //   .heightIn(260.dp, 300.dp),
                 contentScale = ContentScale.FillWidth,
             )
-            Text(text = movie.title,
+            Text(
+                text = movie.title,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
                 maxLines = 1,
                 modifier = modifier.padding(10.dp)
                     .fillMaxWidth(),
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
             RatingBar(
                 modifier = modifier.fillMaxWidth()
                     .padding(horizontal = 10.dp)

@@ -35,7 +35,7 @@ class MainComponent(
     val movies = _movies.asStateFlow()
 
     init {
-        loadMorePopularMovies()
+    //    loadMorePopularMovies()
     }
 
     private fun getPopularMovies() {

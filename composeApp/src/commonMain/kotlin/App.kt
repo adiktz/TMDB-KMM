@@ -7,6 +7,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import io.kamel.image.config.LocalKamelConfig
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ravi.gaurav.learning.tmdb.navigation.RootComponent
+import ravi.gaurav.learning.tmdb.ui.theme.TMDBTheme
 import ravi.gaurav.learning.tmdb.util.customKamelConfig
 import ravi.gaurav.learning.tmdb.view.DetailContent
 import ravi.gaurav.learning.tmdb.view.MainContent
@@ -15,7 +16,7 @@ import ravi.gaurav.learning.tmdb.view.MainContent
 @Preview
 fun App(root: RootComponent) {
     CompositionLocalProvider(LocalKamelConfig provides customKamelConfig) {
-        MaterialTheme {
+        TMDBTheme {
             val childStack by root.childStack.subscribeAsState()
             Children(
                 stack = childStack,
