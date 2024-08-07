@@ -1,3 +1,4 @@
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
@@ -12,11 +13,10 @@ fun MainViewController() = ComposeUIViewController {
     loadKoinModules(
         listOf(
             module { single<ComponentContext> { DefaultComponentContext(applicationLifeCycle) } },
-            module { single<RootComponent> { RootComponent(get()) } }
         )
     )
-    /*val root = remember {
-        RootComponent(DefaultComponentContext(ApplicationLifecycle()))
-    }*/
-    App(root = getKoin().get())
+    val root = remember {
+        RootComponent(getKoin().get())
+    }
+    App(root = root)
 }

@@ -18,10 +18,12 @@ import androidx.compose.ui.unit.dp
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.DEFAULT
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.DetailComponent
 import ravi.gaurav.learning.tmdb.util.Constants
+import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
 
 @Preview
 @Composable
@@ -30,10 +32,18 @@ fun DetailContent(
     modifier: Modifier = Modifier
 ) {
 
+    val uiDesignDecision: UiDesignDecisionHelper = koinInject()
     val movie = remember { component.movie }
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .then(
+                if (uiDesignDecision.shouldAddNavigationBarPadding()) {
+                    Modifier.navigationBarsPadding()
+                } else {
+                    Modifier
+                }
+            )
             .verticalScroll(rememberScrollState())
     ) {
         Box {
@@ -47,7 +57,14 @@ fun DetailContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding(),
+                    .statusBarsPadding()
+                    .then(
+                        if (uiDesignDecision.shouldAddNavigationBarPadding()) {
+                            Modifier.padding(WindowInsets.displayCutout.asPaddingValues())
+                        } else {
+                            Modifier
+                        }
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {

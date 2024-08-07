@@ -15,7 +15,7 @@ import ravi.gaurav.learning.tmdb.api.Repository
 import ravi.gaurav.learning.tmdb.domain.Movie
 
 class MainComponent(
-    componentContext: ComponentContext = getKoin().get(),
+    componentContext: ComponentContext,
     private val repo: Repository = getKoin().get(),
     val showDetails: (Movie) -> Unit
 ) : ComponentContext by componentContext {
