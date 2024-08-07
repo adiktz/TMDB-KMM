@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.essenty.lifecycle.coroutines.repeatOnLifecycle
@@ -62,6 +63,8 @@ import ravi.gaurav.learning.tmdb.util.RatingBar
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
 import ravi.gaurav.learning.tmdb.util.getSystemInsetsHelper
+import ravi.gaurav.learning.tmdb.util.safeCutOutPadding
+import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
 
 
 @Composable
@@ -124,13 +127,13 @@ fun MainContent(
                 verticalItemSpacing = 5.dp,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                item {
+                /*item {
                     Spacer(
                         Modifier.windowInsetsTopHeight(
                             WindowInsets.statusBars
                         )
                     )
-                }
+                }*/
                 item(
                     span = StaggeredGridItemSpan.FullLine
                 ) {
@@ -138,13 +141,7 @@ fun MainContent(
                         "Popular Movies",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .then(
-                                if (!insetsHelper.isPortraitMode()) {
-                                    Modifier.padding(WindowInsets.displayCutout.asPaddingValues())
-                                } else {
-                                    Modifier
-                                }
-                            )
+                            .safeHeaderPadding()
                     )
                 }
 
