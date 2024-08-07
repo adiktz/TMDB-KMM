@@ -15,7 +15,7 @@ import ravi.gaurav.learning.tmdb.api.Repository
 import ravi.gaurav.learning.tmdb.domain.Movie
 
 class MainComponent(
-    componentContext: ComponentContext,
+    componentContext: ComponentContext = getKoin().get(),
     private val repo: Repository = getKoin().get(),
     val showDetails: (Movie) -> Unit
 ) : ComponentContext by componentContext {
@@ -34,9 +34,6 @@ class MainComponent(
     private var _movies: MutableStateFlow<List<Movie>> = MutableStateFlow(arrayListOf())
     val movies = _movies.asStateFlow()
 
-    init {
-    //    loadMorePopularMovies()
-    }
 
     private fun getPopularMovies() {
         _isLoading.value = true

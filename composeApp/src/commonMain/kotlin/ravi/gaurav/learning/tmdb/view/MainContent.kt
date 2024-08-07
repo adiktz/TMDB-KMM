@@ -4,14 +4,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -28,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,12 +39,14 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.DEFAULT
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
 import ravi.gaurav.learning.tmdb.navigation.MainEvent
 import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.RatingBar
+import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
 
 
 @Composable
@@ -55,6 +57,7 @@ fun MainContent(
 
     val movies by component.movies.collectAsState()
     val isLoading by component.isLoading.collectAsState()
+    val uiDesignDecision: UiDesignDecisionHelper = koinInject()
 
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
@@ -67,7 +70,14 @@ fun MainContent(
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
+            .then(
+                if (uiDesignDecision.shouldAddNavigationBarPadding()) {
+                    Modifier.navigationBarsPadding()
+                } else {
+                    Modifier
+                }
+            ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -134,6 +144,14 @@ fun MainContent(
                     }
                 }
 
+                item {
+                    Spacer(
+                        Modifier.windowInsetsBottomHeight(
+                            WindowInsets.systemBars
+                        )
+                    )
+                }
+
             }
         }
     }
@@ -147,7 +165,7 @@ private fun Header(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .then(Modifier.statusBarsPadding())
+            .then(Modifier.systemBarsPadding())
     ) {
         Text(
             text = text,
