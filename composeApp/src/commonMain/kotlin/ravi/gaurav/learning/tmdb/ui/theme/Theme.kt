@@ -264,7 +264,7 @@ fun TMDBTheme(
 
   MaterialTheme(
     colorScheme = colorScheme,
-    typography = AppTypography
+    typography = AppTypography()
   ) {
       Surface(
           modifier = Modifier.fillMaxSize(),
