@@ -73,14 +73,10 @@ fun DetailContent(
 ) {
 
     val insetsHelper: SystemInsetsHelper = koinInject()
-    val movieId = remember { component.movieId }
     val details by component.details.collectAsState()
 
     val screenHelper: ScreenDimensionsHelper = koinInject()
 
-    LaunchedEffect(Unit) {
-        component.getMovieDetails(movieId)
-    }
 
     Box {
         Column(
@@ -153,11 +149,9 @@ fun DetailContent(
 
                                 LazyHorizontalGrid(
                                     modifier = Modifier.height(
-                                        if (casts.size > 8) 300.dp else 150.dp
+                                        140.dp //if (casts.size > 8) 300.dp else 150.dp
                                     ),
-                                    rows = if (casts.size > 8) GridCells.Fixed(2) else GridCells.Fixed(
-                                        1
-                                    ),
+                                    rows = GridCells.Adaptive(140.dp) , //if (casts.size > 8) GridCells.Fixed(2) else GridCells.Fixed(1),
                                     contentPadding = PaddingValues(horizontal = 20.dp),
                                     verticalArrangement = Arrangement.spacedBy(10.dp),
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)

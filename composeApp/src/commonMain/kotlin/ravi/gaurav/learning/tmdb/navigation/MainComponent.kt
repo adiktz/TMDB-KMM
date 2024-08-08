@@ -21,7 +21,6 @@ class MainComponent(
     val showDetails: (Long) -> Unit
 ) : ComponentContext by componentContext {
 
-    private val mutex = Mutex()
 
     private val scope = coroutineScope(SupervisorJob())
 
@@ -31,7 +30,7 @@ class MainComponent(
     private var _isLoading = MutableStateFlow(false)
     val isLoading get() = _isLoading.asStateFlow()
 
-    private var pageNumber:Long =  0
+    private var pageNumber: Long = 0
     private var _movies: MutableStateFlow<List<Movie>> = MutableStateFlow(arrayListOf())
     val movies = _movies.asStateFlow()
 
@@ -45,12 +44,10 @@ class MainComponent(
             _isLoading.value = true
             val response = repo.getPopularMovies(pageNumber)
             response.onSuccess { movieResponse ->
-                mutex.withLock {
-                    pageNumber = movieResponse.page
-                    _movies.value += movieResponse.results
-                    delay(400)
-                    _isLoading.value = false
-                }
+                pageNumber = movieResponse.page
+                _movies.value += movieResponse.results
+                delay(400)
+                _isLoading.value = false
             }
             response.onFailure {
                 _isLoading.value = false
@@ -61,19 +58,19 @@ class MainComponent(
 
     fun loadMorePopularMovies() {
         scope.launch {
-            mutex.withLock {
-                if (!isLoading.value) {
-                    pageNumber += 1
-                    getPopularMovies()
-                }
+            if (!isLoading.value) {
+                pageNumber += 1
+                getPopularMovies()
             }
         }
     }
+
     fun onEvent(event: MainEvent) {
         when (event) {
             is MainEvent.ShowDetails -> {
                 showDetails(event.movieId)
             }
+
             is MainEvent.Update -> {
 
             }

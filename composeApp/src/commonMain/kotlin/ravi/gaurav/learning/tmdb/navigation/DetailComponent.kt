@@ -30,6 +30,10 @@ class DetailComponent(
 
     private val scope = coroutineScope(Job() + Dispatchers.IO)
 
+    init {
+        getMovieDetails(movieId)
+    }
+
     fun goBack() { onBack() }
 
     fun getMovieDetails(movieId: Long) {
