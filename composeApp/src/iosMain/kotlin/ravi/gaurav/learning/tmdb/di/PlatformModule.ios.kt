@@ -9,7 +9,6 @@ import ravi.gaurav.learning.tmdb.util.IosSystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.IosScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
-import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
 
 actual val platformModule: Module = module {
     single<HttpClientEngine> { Darwin.create() }

@@ -48,6 +48,9 @@ class NetworkClient(
                 !httpResponse.status.isSuccess()
             }
         }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 60000
+        }
         expectSuccess = true
         HttpResponseValidator {
             handleResponseExceptionWithRequest { exception, request ->
@@ -66,7 +69,7 @@ class NetworkClient(
                             exception.response.bodyAsText()
                         }
 
-                        else -> { "Unknown Error..."}
+                        else -> { exception.message }
                     }
                 throw Exception(exceptionResponse)
             }

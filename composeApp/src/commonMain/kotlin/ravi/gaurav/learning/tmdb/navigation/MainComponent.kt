@@ -18,7 +18,7 @@ import ravi.gaurav.learning.tmdb.domain.Movie
 class MainComponent(
     componentContext: ComponentContext,
     private val repo: Repository = getKoin().get(),
-    val showDetails: (Movie) -> Unit
+    val showDetails: (Long) -> Unit
 ) : ComponentContext by componentContext {
 
     private val mutex = Mutex()
@@ -34,6 +34,10 @@ class MainComponent(
     private var pageNumber:Long =  0
     private var _movies: MutableStateFlow<List<Movie>> = MutableStateFlow(arrayListOf())
     val movies = _movies.asStateFlow()
+
+    init {
+        loadMorePopularMovies()
+    }
 
     private fun getPopularMovies() {
         if (isLoading.value) return
@@ -68,7 +72,7 @@ class MainComponent(
     fun onEvent(event: MainEvent) {
         when (event) {
             is MainEvent.ShowDetails -> {
-                showDetails(event.movie)
+                showDetails(event.movieId)
             }
             is MainEvent.Update -> {
 
@@ -79,5 +83,5 @@ class MainComponent(
 
 sealed interface MainEvent {
     data class Update(val id: String) : MainEvent
-    data class ShowDetails(val movie: Movie) : MainEvent
+    data class ShowDetails(val movieId: Long) : MainEvent
 }

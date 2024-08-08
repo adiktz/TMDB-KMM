@@ -72,11 +72,11 @@ fun MainContent(
         component.onEvent(MainEvent.Update(it))
     }
 
-    LaunchedEffect(movies) {
+    /*LaunchedEffect(movies) {
         if (movies.isEmpty()) {
             component.loadMorePopularMovies()
         }
-    }
+    }*/
 
     val staggeredGridCell = if (insetsHelper.isPortraitMode()
         && (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS)
@@ -141,7 +141,7 @@ fun MainContent(
                     movies
                 ) { index: Int, movie: Movie ->
 
-                    MovieItem(movie = movie) { component.onEvent(MainEvent.ShowDetails(movie)) }
+                    MovieItem(movie = movie) { component.onEvent(MainEvent.ShowDetails(movie.id)) }
 
                     // Trigger next page load when the user scrolls near the end
                     if (index >= movies.size - 1) {
@@ -191,6 +191,7 @@ private fun Header(
         Text(
             text = text,
             style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(10.dp),
             textAlign = TextAlign.Left
         )
@@ -216,7 +217,7 @@ fun ObserveErrorWhenStarted(
 @Composable
 fun MovieItem(
     modifier: Modifier = Modifier,
-    movie: Movie = Movie.DEFAULT,
+    movie: Movie,
     onClick: () -> Unit = {}
 ) {
 

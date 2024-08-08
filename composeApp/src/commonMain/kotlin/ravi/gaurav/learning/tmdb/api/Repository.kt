@@ -12,4 +12,6 @@ class Repository(
 ) {
 
     suspend fun getPopularMovies(pageNumber: Long = 1) = service.getPopularMovies(pageNumber)
+
+    suspend fun getMovieDetails(movieId: Long) = service.getMovieDetails(movieId)
 }

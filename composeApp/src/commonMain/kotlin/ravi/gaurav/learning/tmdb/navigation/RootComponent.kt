@@ -14,7 +14,7 @@ class RootComponent(
 
     private val navigator = StackNavigation<Config>()
 
-     val childStack = childStack(
+    val childStack = childStack(
         source = navigator,
         serializer = Config.serializer(),
         initialConfiguration = Config.Main,
@@ -27,15 +27,18 @@ class RootComponent(
         context: ComponentContext
     ): Child = when (config) {
         is Config.Main -> Child.Main(
-            MainComponent(context) { movie ->
-                navigator.pushNew(Config.Detail(movie))
+            MainComponent(context) { movieId ->
+                navigator.pushNew(Config.Detail(movieId))
             }
         )
 
         is Config.Detail -> Child.Detail(
-            DetailComponent(context, config.movie) {
-                navigator.pop()
-            }
+            DetailComponent(
+                context,
+                config.movieId,
+                onBack = { navigator.pop() },
+                onMovieSelected = { movieId -> navigator.pushNew(Config.Detail(movieId)) }
+            )
         )
     }
 
@@ -50,6 +53,6 @@ class RootComponent(
         data object Main : Config()
 
         @Serializable
-        data class Detail(val movie: Movie) : Config()
+        data class Detail(val movieId: Long, val uniqueId: String = randomUUID()) : Config()
     }
 }
