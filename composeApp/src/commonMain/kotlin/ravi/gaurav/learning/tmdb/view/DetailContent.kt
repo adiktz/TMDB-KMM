@@ -190,30 +190,15 @@ fun DetailContent(
                             }
                         }
 
-                    details.similar?.results?.takeIf { it.isNotEmpty() }?.let {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Column(
-                            modifier = Modifier.padding(top = 10.dp)
-                        ) {
-                            Text(
-                                text = "Similar Movies",
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(10.dp),
-                            )
+                    details.recommendations?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
+                        Recommendation("Recommendations", movies) { movie ->
+                            component.onMovieSelected(movie)
+                        }
+                    }
 
-                            LazyRow(
-                                modifier = Modifier.height(300.dp),
-                                contentPadding = PaddingValues(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-
-                                items(it) { similar ->
-                                    SimilarMovieItem(movie = similar) {
-                                        component.onMovieSelected(similar)
-                                    }
-                                }
-                            }
+                    details.similar?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
+                        Recommendation("Similar Movies", movies) { movie ->
+                            component.onMovieSelected(movie)
                         }
                     }
                 }
@@ -366,6 +351,38 @@ fun SimilarMovieItem(
                 stars = 5,
                 starsColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
+        }
+    }
+}
+
+@Composable
+private fun Recommendation(
+    headerTitle: String,
+    movies: List<RecommendationsResult>,
+    onClick: (RecommendationsResult) -> Unit = {}
+) {
+    Spacer(modifier = Modifier.height(20.dp))
+    Column(
+        modifier = Modifier.padding(top = 10.dp)
+    ) {
+        Text(
+            text = headerTitle,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(10.dp),
+        )
+
+        LazyRow(
+            modifier = Modifier.height(300.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+
+            items(movies) { similar ->
+                SimilarMovieItem(movie = similar) {
+                    onClick(similar)
+                }
+            }
         }
     }
 }
