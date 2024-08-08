@@ -97,6 +97,8 @@ kotlin {
 
             implementation(libs.kamel.image)
 
+            implementation(libs.kotlinx.datetime)
+
         }
         iosMain.dependencies {
             //Ktor
