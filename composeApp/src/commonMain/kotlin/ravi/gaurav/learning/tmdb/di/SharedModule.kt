@@ -13,5 +13,4 @@ val commonModule = module {
     singleOf(::NetworkClient)
     singleOf(::Service)
     singleOf(::Repository)
-    single<SystemInsetsHelper>{ getSystemInsetsHelper() }
 }

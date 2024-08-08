@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +27,12 @@ import androidx.compose.ui.unit.dp
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.navigation.DetailComponent
 import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.OS
+import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
+import ravi.gaurav.learning.tmdb.util.getScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.getSystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
 
@@ -40,6 +45,9 @@ fun DetailContent(
 
     val insetsHelper = getSystemInsetsHelper()
     val movie = remember { component.movie }
+
+    val screenHelper: ScreenDimensionsHelper = koinInject()
+
     Box {
         Column(
             modifier = Modifier
@@ -53,11 +61,19 @@ fun DetailContent(
                 )
                 .verticalScroll(rememberScrollState())
         ) {
+
+            println("ScreenHeight :: ${screenHelper.getScreenHeight()}")
             KamelImage(
                 resource = asyncPainterResource(Constants.imageBaseUrl + movie.backdropPath),
                 contentDescription = null,
                 modifier = modifier.fillMaxWidth()
-                    .height(350.dp),
+                    .then(
+                        if (insetsHelper.isPortraitMode()) {
+                            Modifier.height((screenHelper.getScreenHeight() / 3).dp)
+                        } else {
+                            Modifier.height(screenHelper.getScreenHeight().dp)
+                        }
+                    ),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -87,6 +103,7 @@ fun DetailHeader(
             onClick = { goBack() },
             modifier = Modifier
                 .alpha(0.7f)
+
         ) {
             Icon(imageVector = Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
         }

@@ -33,6 +33,7 @@ essenty = "2.1.0"
 
 #Logger
 slf4j_version = "1.7.36"
+window = "1.3.0"
 
 
 
@@ -82,6 +83,7 @@ esenty-lifecycle-coroutine = { module = "com.arkivanov.essenty:lifecycle-corouti
 #Logging
 slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4j_version" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j_version" }
+androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
 
 
 

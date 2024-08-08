@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.decompose)
 
             implementation(libs.kamel.image)
+            implementation(libs.androidx.window)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

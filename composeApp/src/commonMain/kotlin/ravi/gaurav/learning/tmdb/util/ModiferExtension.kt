@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Modifier.safeCutOutPadding(): Modifier {
@@ -18,7 +19,11 @@ fun Modifier.safeCutOutPadding(): Modifier {
                 WindowInsets.displayCutout.asPaddingValues().calculateLeftPadding(LayoutDirection.Ltr),
                 WindowInsets.displayCutout.asPaddingValues().calculateRightPadding(LayoutDirection.Ltr)
             )
-            this.padding(start = paddingValues, end = paddingValues)
+            if (insetsHelper.os == OS.ANDROID) {
+                this.padding(start = 15.dp + paddingValues, end = paddingValues)
+            } else {
+                this.padding(start = paddingValues, end = paddingValues)
+            }
         }
         else -> {
             this
