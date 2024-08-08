@@ -3,8 +3,6 @@ package ravi.gaurav.learning.tmdb.util
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.window.layout.WindowMetricsCalculator
 
 actual fun getScreenDimensionsHelper(): ScreenDimensionsHelper = object : ScreenDimensionsHelper {
     @Composable
@@ -20,7 +18,7 @@ actual fun getScreenDimensionsHelper(): ScreenDimensionsHelper = object : Screen
     }
 }
 
-class ScreenDimensionsHelperImpl(private val context: Context): ScreenDimensionsHelper {
+class AndroidScreenDimensionsHelper(private val context: Context): ScreenDimensionsHelper {
     @Composable
     override fun getScreenHeight(): Int {
         val configuration = LocalConfiguration.current

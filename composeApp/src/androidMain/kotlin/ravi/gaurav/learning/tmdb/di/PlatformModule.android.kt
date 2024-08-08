@@ -6,11 +6,11 @@ import okhttp3.OkHttpClient
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
-import ravi.gaurav.learning.tmdb.util.AndroidUiDesignDecisionHelper
 import ravi.gaurav.learning.tmdb.util.DnsSelector
 import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
-import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelperImpl
+import ravi.gaurav.learning.tmdb.util.AndroidScreenDimensionsHelper
+import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
+import ravi.gaurav.learning.tmdb.util.AndroidSystemInsetsHelperImpl
 
 actual val platformModule: Module = module {
     single<HttpClientEngine> {
@@ -18,6 +18,7 @@ actual val platformModule: Module = module {
             OkHttpClient.Builder().dns(DnsSelector()).build()
         }
     }
-    singleOf<UiDesignDecisionHelper>(::AndroidUiDesignDecisionHelper)
-    single<ScreenDimensionsHelper> { ScreenDimensionsHelperImpl(get()) }
+
+    single<ScreenDimensionsHelper> { AndroidScreenDimensionsHelper(get()) }
+    singleOf<SystemInsetsHelper>(::AndroidSystemInsetsHelperImpl)
 }

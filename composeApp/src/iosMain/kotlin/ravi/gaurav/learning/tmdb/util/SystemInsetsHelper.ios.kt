@@ -29,3 +29,23 @@ actual fun getSystemInsetsHelper(): SystemInsetsHelper = object : SystemInsetsHe
     override val os: OS
         get() = OS.IOS
 }
+
+class IosSystemInsetsHelper: SystemInsetsHelper {
+    @Composable
+    override fun isPortraitMode(): Boolean {
+        val orientation = UIApplication.sharedApplication.statusBarOrientation
+        return orientation == UIInterfaceOrientationPortrait
+    }
+
+    @Composable
+    override fun getPaddingModifier(): Modifier {
+        return if (isPortraitMode()) {
+            Modifier
+        } else {
+            Modifier.systemBarsPadding()
+        }
+    }
+
+    override val os: OS
+        get() = OS.IOS
+}

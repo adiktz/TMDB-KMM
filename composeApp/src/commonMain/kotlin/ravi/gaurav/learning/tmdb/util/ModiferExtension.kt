@@ -9,10 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import org.koin.compose.koinInject
 
 @Composable
 fun Modifier.safeCutOutPadding(): Modifier {
-    val insetsHelper: SystemInsetsHelper = getSystemInsetsHelper()
+    val insetsHelper: SystemInsetsHelper = koinInject()
     return when {
         !insetsHelper.isPortraitMode() -> {
             val paddingValues = maxOf(

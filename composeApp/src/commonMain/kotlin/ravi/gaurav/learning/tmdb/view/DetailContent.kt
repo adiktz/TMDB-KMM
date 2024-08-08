@@ -32,6 +32,7 @@ import ravi.gaurav.learning.tmdb.navigation.DetailComponent
 import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.OS
 import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
+import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.getScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.getSystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
@@ -43,7 +44,7 @@ fun DetailContent(
     modifier: Modifier = Modifier
 ) {
 
-    val insetsHelper = getSystemInsetsHelper()
+    val insetsHelper: SystemInsetsHelper = koinInject()
     val movie = remember { component.movie }
 
     val screenHelper: ScreenDimensionsHelper = koinInject()
@@ -62,7 +63,6 @@ fun DetailContent(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            println("ScreenHeight :: ${screenHelper.getScreenHeight()}")
             KamelImage(
                 resource = asyncPainterResource(Constants.imageBaseUrl + movie.backdropPath),
                 contentDescription = null,

@@ -21,7 +21,7 @@ actual fun getScreenDimensionsHelper(): ScreenDimensionsHelper = object : Screen
 }
 
 @OptIn(ExperimentalForeignApi::class)
-class ScreenDimensionsHelperImpl : ScreenDimensionsHelper {
+class IosScreenDimensionsHelper : ScreenDimensionsHelper {
 
     @Composable
     override fun getScreenHeight(): Int {

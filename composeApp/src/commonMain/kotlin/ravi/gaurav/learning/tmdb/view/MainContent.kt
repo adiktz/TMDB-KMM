@@ -40,6 +40,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.DEFAULT
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
@@ -48,7 +49,6 @@ import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.OS
 import ravi.gaurav.learning.tmdb.util.RatingBar
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
-import ravi.gaurav.learning.tmdb.util.getSystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
 
 
@@ -60,7 +60,7 @@ fun MainContent(
 
     val movies by component.movies.collectAsState()
     val isLoading by component.isLoading.collectAsState()
-    val insetsHelper: SystemInsetsHelper = getSystemInsetsHelper()
+    val insetsHelper: SystemInsetsHelper = koinInject()
 
     val lazyStaggeredGridState = rememberLazyStaggeredGridState()
 
@@ -76,6 +76,14 @@ fun MainContent(
         if (movies.isEmpty()) {
             component.loadMorePopularMovies()
         }
+    }
+
+    val staggeredGridCell = if (insetsHelper.isPortraitMode()
+        && (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS)
+    ) {
+        StaggeredGridCells.Fixed(2)
+    } else {
+        StaggeredGridCells.Adaptive(200.dp)
     }
 
     Column(
@@ -111,7 +119,7 @@ fun MainContent(
         AnimatedVisibility(movies.isNotEmpty()) {
             LazyVerticalStaggeredGrid(
                 modifier = modifier,
-                columns = StaggeredGridCells.Adaptive(198.dp),
+                columns = staggeredGridCell,
                 state = lazyStaggeredGridState,
                 contentPadding = PaddingValues(5.dp),
                 verticalItemSpacing = 5.dp,

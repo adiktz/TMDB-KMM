@@ -17,3 +17,18 @@ actual fun getSystemInsetsHelper(): SystemInsetsHelper = object : SystemInsetsHe
     override val os: OS
         get() = OS.DESKTOP
 }
+
+class DesktopSystemInsetsHelper: SystemInsetsHelper {
+    @Composable
+    override fun isPortraitMode(): Boolean {
+        return false
+    }
+
+    @Composable
+    override fun getPaddingModifier(): Modifier {
+        return Modifier
+    }
+
+    override val os: OS
+        get() = OS.DESKTOP
+}

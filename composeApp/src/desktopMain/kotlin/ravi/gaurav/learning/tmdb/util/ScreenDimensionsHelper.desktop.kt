@@ -13,7 +13,7 @@ actual fun getScreenDimensionsHelper(): ScreenDimensionsHelper  = object : Scree
     override fun getScreenWidth(): Int = screenSize.width
 }
 
-class ScreenDimensionsHelperImpl: ScreenDimensionsHelper {
+class DesktopScreenDimensionsHelper: ScreenDimensionsHelper {
 
     @Composable
     override fun getScreenHeight(): Int = Toolkit.getDefaultToolkit().screenSize.height

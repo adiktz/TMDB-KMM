@@ -5,13 +5,14 @@ import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import ravi.gaurav.learning.tmdb.util.DesktopUiDesignDecisionHelper
+import ravi.gaurav.learning.tmdb.util.DesktopSystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
-import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelperImpl
-import ravi.gaurav.learning.tmdb.util.UiDesignDecisionHelper
+import ravi.gaurav.learning.tmdb.util.DesktopScreenDimensionsHelper
+import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
 
 actual val platformModule: Module = module {
     single<HttpClientEngine> { OkHttp.create() }
-    singleOf<UiDesignDecisionHelper>(::DesktopUiDesignDecisionHelper)
-    singleOf<ScreenDimensionsHelper>(::ScreenDimensionsHelperImpl)
+    singleOf<ScreenDimensionsHelper>(::DesktopScreenDimensionsHelper)
+    singleOf<SystemInsetsHelper>(::DesktopSystemInsetsHelper)
+
 }
