@@ -1,7 +1,6 @@
 package ravi.gaurav.learning.tmdb.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
@@ -43,7 +40,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -52,13 +48,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -67,7 +61,6 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.jetbrains.skia.svg.SVGPreserveAspectRatio
 import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.MovieDetails
 import ravi.gaurav.learning.tmdb.domain.RecommendationsResult
@@ -124,9 +117,6 @@ fun DetailContent(
                     contentScale = ContentScale.Crop,
                 )
 
-            }
-
-            details?.let { details ->
                 Column(
                     modifier = Modifier.offset(y = (-50).dp)
                         .safeCutOutPadding()
@@ -137,13 +127,15 @@ fun DetailContent(
                         details = details
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
                     details.overview?.let {
+
+                        SectionSeparater()
+
                         Text(
                             text = "Overview".uppercase(),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(10.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp)
                         )
                         Text(
                             text = it,
@@ -153,38 +145,39 @@ fun DetailContent(
 
                     details.images?.backdrops?.takeIf { it.isNotEmpty() }?.let { backdrops ->
                         val aspectRatio = backdrops.filter { it.aspectRatio != null }
-                            .maxOfOrNull { it.aspectRatio!! } ?: 1.77f
-                        Spacer(modifier = Modifier.height(20.dp))
+                            .maxOfOrNull { it.aspectRatio!! } ?: 1.77
+
+                        SectionSeparater()
+
                         Text(
                             text = "Gallery".uppercase(),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(10.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp),
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
                         BackdropPager(
                             backdrops = backdrops.filter { it.filePath != null }
-                                .map { it.filePath!! }
+                                .map { it.filePath!! },
+                            aspectRatio = aspectRatio
                         )
                     }
 
                     details.credits?.cast?.takeIf { it.isNotEmpty() }
                         ?.filter { it.profilePath != null }?.let { casts ->
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Column(
-                                modifier = Modifier.padding(top = 10.dp)
-                            ) {
 
+                            SectionSeparater()
+
+                            Column {
                                 Text(
                                     text = "Cast".uppercase(),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(10.dp),
+                                    modifier = Modifier.padding(horizontal = 10.dp),
                                 )
 
                                 LazyHorizontalGrid(
-                                    modifier = Modifier.height(
-                                        140.dp //if (casts.size > 8) 300.dp else 150.dp
-                                    ),
+                                    modifier = Modifier.height(140.dp),
                                     rows = GridCells.Adaptive(140.dp), //if (casts.size > 8) GridCells.Fixed(2) else GridCells.Fixed(1),
                                     contentPadding = PaddingValues(horizontal = 20.dp),
                                     verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -219,12 +212,18 @@ fun DetailContent(
                         }
 
                     details.recommendations?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
+
+                        SectionSeparater()
+
                         Recommendation("Recommendations".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
                         }
                     }
 
                     details.similar?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
+
+                        SectionSeparater()
+
                         Recommendation("Similar Movies".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
                         }
@@ -348,17 +347,17 @@ fun SimilarMovieItem(
 
     Card(
         onClick = { onClick() },
-        modifier = modifier.wrapContentHeight()
+        modifier = Modifier.wrapContentHeight()
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .wrapContentHeight()
                 .width(IntrinsicSize.Min)
         ) {
             KamelImage(
                 resource = asyncPainterResource(Constants.posterBaseUrl + movie.posterPath),
                 contentDescription = null,
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .height(200.dp),
                 contentScale = ContentScale.Crop,
             )
@@ -367,12 +366,12 @@ fun SimilarMovieItem(
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
                 maxLines = 1,
-                modifier = modifier.padding(10.dp)
+                modifier = Modifier.padding(10.dp)
                     .fillMaxWidth(),
                 overflow = TextOverflow.Ellipsis
             )
             RatingBar(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 10.dp)
                     .padding(bottom = 10.dp),
                 rating = movie.voteAverage?.div(2) ?: 0.0,
@@ -389,19 +388,20 @@ private fun Recommendation(
     movies: List<RecommendationsResult>,
     onClick: (RecommendationsResult) -> Unit = {}
 ) {
-    Spacer(modifier = Modifier.height(20.dp))
     Column(
-        modifier = Modifier.padding(top = 10.dp)
+        modifier = Modifier
     ) {
         Text(
             text = headerTitle,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(horizontal = 10.dp),
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+
         LazyRow(
-            modifier = Modifier.height(300.dp),
+            modifier = Modifier.height(280.dp),
             contentPadding = PaddingValues(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
