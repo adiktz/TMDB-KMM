@@ -1,5 +1,7 @@
 package ravi.gaurav.learning.tmdb.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,6 +26,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,16 +52,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.skia.svg.SVGPreserveAspectRatio
 import org.koin.compose.koinInject
 import ravi.gaurav.learning.tmdb.domain.MovieDetails
 import ravi.gaurav.learning.tmdb.domain.RecommendationsResult
@@ -64,6 +79,7 @@ import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.safeCutOutPadding
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
+import kotlin.math.absoluteValue
 
 @Preview
 @Composable
@@ -93,6 +109,7 @@ fun DetailContent(
         ) {
 
             details?.let { details ->
+
                 KamelImage(
                     resource = asyncPainterResource(Constants.imageBaseUrl + details.backdropPath),
                     contentDescription = null,
@@ -106,6 +123,7 @@ fun DetailContent(
                         ),
                     contentScale = ContentScale.Crop,
                 )
+
             }
 
             details?.let { details ->
@@ -122,7 +140,7 @@ fun DetailContent(
                     Spacer(modifier = Modifier.height(20.dp))
                     details.overview?.let {
                         Text(
-                            text = "Overview",
+                            text = "Overview".uppercase(),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(10.dp),
@@ -130,6 +148,22 @@ fun DetailContent(
                         Text(
                             text = it,
                             modifier = Modifier.padding(horizontal = 10.dp)
+                        )
+                    }
+
+                    details.images?.backdrops?.takeIf { it.isNotEmpty() }?.let { backdrops ->
+                        val aspectRatio = backdrops.filter { it.aspectRatio != null }
+                            .maxOfOrNull { it.aspectRatio!! } ?: 1.77f
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "Gallery".uppercase(),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(10.dp),
+                        )
+                        BackdropPager(
+                            backdrops = backdrops.filter { it.filePath != null }
+                                .map { it.filePath!! }
                         )
                     }
 
@@ -141,7 +175,7 @@ fun DetailContent(
                             ) {
 
                                 Text(
-                                    text = "Cast",
+                                    text = "Cast".uppercase(),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(10.dp),
@@ -151,7 +185,7 @@ fun DetailContent(
                                     modifier = Modifier.height(
                                         140.dp //if (casts.size > 8) 300.dp else 150.dp
                                     ),
-                                    rows = GridCells.Adaptive(140.dp) , //if (casts.size > 8) GridCells.Fixed(2) else GridCells.Fixed(1),
+                                    rows = GridCells.Adaptive(140.dp), //if (casts.size > 8) GridCells.Fixed(2) else GridCells.Fixed(1),
                                     contentPadding = PaddingValues(horizontal = 20.dp),
                                     verticalArrangement = Arrangement.spacedBy(10.dp),
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -185,13 +219,13 @@ fun DetailContent(
                         }
 
                     details.recommendations?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
-                        Recommendation("Recommendations", movies) { movie ->
+                        Recommendation("Recommendations".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
                         }
                     }
 
                     details.similar?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
-                        Recommendation("Similar Movies", movies) { movie ->
+                        Recommendation("Similar Movies".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
                         }
                     }
@@ -377,6 +411,105 @@ private fun Recommendation(
                     onClick(similar)
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun BackdropPager(
+    backdrops: List<String>,
+    aspectRatio: Double = 1.77,
+    modifier: Modifier = Modifier
+) {
+    val insetsHelper: SystemInsetsHelper = koinInject()
+    val screenHelper: ScreenDimensionsHelper = koinInject()
+
+    val pagerState = rememberPagerState(pageCount = {
+        backdrops.size
+    })
+
+    val fling = PagerDefaults.flingBehavior(
+        state = pagerState,
+        pagerSnapDistance = PagerSnapDistance.atMost(pagerState.pageCount)
+    )
+
+
+    val defaultPadding = if (insetsHelper.isPortraitMode()) {
+        20
+    } else {
+        40
+    }
+
+    val defaultPagePadding = if (insetsHelper.isPortraitMode()) {
+        5
+    } else {
+        10
+    }
+
+    val cardWidth = if (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS) {
+        (screenHelper.getScreenWidth() - defaultPadding - defaultPagePadding)
+    } else {
+        ((screenHelper.getScreenWidth() - defaultPadding - defaultPagePadding) / 2)
+    }
+
+    val cardHeight = minOf(((cardWidth) * (1 / aspectRatio)).dp, screenHelper.getScreenHeight().dp)
+
+    val pageSize = if (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS) {
+        PageSize.Fill
+    } else {
+        PageSize.Fixed(cardWidth.dp - defaultPadding.dp - defaultPagePadding.dp)
+    }
+
+    val contentPadding = PaddingValues(horizontal = defaultPadding.dp)
+
+    HorizontalPager(
+        state = pagerState,
+        contentPadding = contentPadding,
+        flingBehavior = fling,
+        pageSize = pageSize,
+        modifier = modifier.height(cardHeight)
+    ) { page ->
+        val pageOffset = (
+                (pagerState.currentPage - page) + pagerState
+                    .currentPageOffsetFraction
+                ).absoluteValue
+
+        val animatedCardHeight = if (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS) {
+            lerp(cardHeight, cardHeight * 0.9f, pageOffset)
+        } else {
+            cardHeight
+        }
+
+        Card(
+            modifier = Modifier
+                .width(cardWidth.dp)
+                .padding(PaddingValues(horizontal = defaultPagePadding.dp))
+                .height(animatedCardHeight)
+        ) {
+            KamelImage(
+                resource = asyncPainterResource(Constants.imageBaseUrl + backdrops[page]),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(cardWidth.dp + defaultPagePadding.dp)
+                    .height(cardHeight)
+                    .then(
+                        if (insetsHelper.os == OS.ANDROID || insetsHelper.os == OS.IOS) {
+                            Modifier.graphicsLayer {
+                                val scale = lerp(
+                                    start = 1f,
+                                    stop = 3f,
+                                    fraction = pageOffset
+                                )
+                                scaleX *= scale
+                                scaleY *= scale
+                            }
+                        } else {
+                            Modifier
+                        }
+                    )
+            )
         }
     }
 }
