@@ -36,10 +36,14 @@ class RootComponent(
             DetailComponent(
                 context,
                 config.movieId,
-                onBack = { navigator.pop() },
+                onBack = ::onBack,
                 onMovieSelected = { movieId -> navigator.pushNew(Config.Detail(movieId)) }
             )
         )
+    }
+
+    private fun onBack() {
+        navigator.pop()
     }
 
     sealed class Child {
