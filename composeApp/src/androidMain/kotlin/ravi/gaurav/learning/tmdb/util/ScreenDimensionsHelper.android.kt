@@ -32,7 +32,7 @@ class AndroidScreenDimensionsHelper(private val context: Context): ScreenDimensi
     @Composable
     override fun getScreenWidth(): Int {
         val configuration = LocalConfiguration.current
-        return configuration.screenHeightDp
+        return configuration.screenWidthDp
         /*return WindowMetricsCalculator
             .getOrCreate()
             .computeCurrentWindowMetrics(LocalContext.current)
