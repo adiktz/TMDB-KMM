@@ -7,6 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SectionSeparater(modifier: Modifier = Modifier) {
+fun SectionSeparator(modifier: Modifier = Modifier) {
     Spacer(modifier = modifier.height(30.dp))
 }

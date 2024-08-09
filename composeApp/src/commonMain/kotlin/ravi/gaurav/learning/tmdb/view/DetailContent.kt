@@ -35,8 +35,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -129,7 +130,7 @@ fun DetailContent(
 
                     details.overview?.let {
 
-                        SectionSeparater()
+                        SectionSeparator()
 
                         Text(
                             text = "Overview".uppercase(),
@@ -147,7 +148,7 @@ fun DetailContent(
                         val aspectRatio = backdrops.filter { it.aspectRatio != null }
                             .maxOfOrNull { it.aspectRatio!! } ?: 1.77
 
-                        SectionSeparater()
+                        SectionSeparator()
 
                         Text(
                             text = "Gallery".uppercase(),
@@ -166,7 +167,7 @@ fun DetailContent(
                     details.credits?.cast?.takeIf { it.isNotEmpty() }
                         ?.filter { it.profilePath != null }?.let { casts ->
 
-                            SectionSeparater()
+                            SectionSeparator()
 
                             Column {
                                 Text(
@@ -213,7 +214,7 @@ fun DetailContent(
 
                     details.recommendations?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
 
-                        SectionSeparater()
+                        SectionSeparator()
 
                         Recommendation("Recommendations".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
@@ -222,7 +223,7 @@ fun DetailContent(
 
                     details.similar?.results?.takeIf { it.isNotEmpty() }?.let { movies ->
 
-                        SectionSeparater()
+                        SectionSeparator()
 
                         Recommendation("Similar Movies".uppercase(), movies) { movie ->
                             component.onMovieSelected(movie)
@@ -254,13 +255,18 @@ fun DetailHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        FilledTonalIconButton(
+        FilledIconButton(
             onClick = { goBack() },
             modifier = Modifier
-                .alpha(0.7f)
+                .alpha(0.8f),
+            colors = IconButtonDefaults.filledIconButtonColors().copy(containerColor = MaterialTheme.colorScheme.primaryContainer)
 
         ) {
-            Icon(imageVector = Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
     }
 }
