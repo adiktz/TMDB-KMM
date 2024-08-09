@@ -2,28 +2,31 @@ package ravi.gaurav.learning.tmdb.util
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalLayoutDirection
 import org.koin.compose.koinInject
 
 @Composable
 fun Modifier.safeCutOutPadding(): Modifier {
     val insetsHelper: SystemInsetsHelper = koinInject()
+    val direction = LocalLayoutDirection.current
     return when {
         !insetsHelper.isPortraitMode() -> {
-            val paddingValues = maxOf(
-                WindowInsets.displayCutout.asPaddingValues().calculateLeftPadding(LayoutDirection.Ltr),
-                WindowInsets.displayCutout.asPaddingValues().calculateRightPadding(LayoutDirection.Ltr)
-            )
+            val startPadding =
+                WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(direction)
+            val endPadding =
+                WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(direction)
             if (insetsHelper.os == OS.ANDROID) {
-                this.padding(start = 15.dp + paddingValues, end = paddingValues)
+                this.padding(start = startPadding, end = endPadding)
             } else {
-                this.padding(start = paddingValues, end = paddingValues)
+                this.padding(horizontal = maxOf(startPadding, endPadding))
             }
         }
         else -> {
@@ -37,4 +40,15 @@ fun Modifier.safeHeaderPadding(): Modifier {
     return this
         .statusBarsPadding()
         .safeCutOutPadding()
+        .safeNavigationBarsPadding()
+}
+
+@Composable
+fun Modifier.safeNavigationBarsPadding(): Modifier {
+    val insetsHelper: SystemInsetsHelper = koinInject()
+    return if (insetsHelper.os == OS.ANDROID && !insetsHelper.isPortraitMode()) {
+        this.navigationBarsPadding()
+    } else {
+        this
+    }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -73,6 +77,7 @@ import ravi.gaurav.learning.tmdb.util.ScreenDimensionsHelper
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
 import ravi.gaurav.learning.tmdb.util.safeCutOutPadding
 import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
+import ravi.gaurav.learning.tmdb.util.safeNavigationBarsPadding
 import kotlin.math.absoluteValue
 
 @Preview
@@ -92,13 +97,6 @@ fun DetailContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .then(
-                    if (insetsHelper.os == OS.ANDROID && !insetsHelper.isPortraitMode()) {
-                        Modifier.navigationBarsPadding()
-                    } else {
-                        Modifier
-                    }
-                )
                 .verticalScroll(rememberScrollState())
         ) {
 
@@ -121,6 +119,7 @@ fun DetailContent(
                 Column(
                     modifier = Modifier.offset(y = (-50).dp)
                         .safeCutOutPadding()
+                        .safeNavigationBarsPadding()
                 ) {
 
                     SubHeader(
@@ -232,11 +231,16 @@ fun DetailContent(
                 }
             }
 
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.systemBars
+                )
+            )
         }
     }
 
     DetailHeader(
-        modifier = Modifier.safeHeaderPadding()
+        modifier = Modifier.safeContentPadding()
     ) {
         component.goBack()
     }
