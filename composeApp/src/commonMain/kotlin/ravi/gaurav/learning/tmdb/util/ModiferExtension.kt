@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,10 +38,15 @@ fun Modifier.safeCutOutPadding(): Modifier {
 
 @Composable
 fun Modifier.safeHeaderPadding(): Modifier {
-    return this
-        .statusBarsPadding()
-        .safeCutOutPadding()
-        .safeNavigationBarsPadding()
+    val insetsHelper: SystemInsetsHelper = koinInject()
+    return if (insetsHelper.os == OS.IOS) {
+        this
+            .statusBarsPadding()
+            .safeCutOutPadding()
+            .safeNavigationBarsPadding()
+    } else {
+        this.safeContentPadding()
+    }
 }
 
 @Composable

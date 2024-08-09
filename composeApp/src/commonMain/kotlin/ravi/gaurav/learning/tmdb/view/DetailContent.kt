@@ -240,7 +240,7 @@ fun DetailContent(
     }
 
     DetailHeader(
-        modifier = Modifier.safeContentPadding()
+        modifier = Modifier.safeHeaderPadding()
     ) {
         component.goBack()
     }
