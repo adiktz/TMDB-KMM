@@ -274,7 +274,7 @@ fun DetailHeader(
 @Composable
 fun SubHeader(modifier: Modifier = Modifier, details: MovieDetails) {
     val yearOfRelease: String = remember {
-        details.releaseDate?.let {
+        details.releaseDate?.takeIf { it.isNotEmpty() }?.let {
             LocalDate.parse(it).year.toString()
         } ?: "----"
     }
