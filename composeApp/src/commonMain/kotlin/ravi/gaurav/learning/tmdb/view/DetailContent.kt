@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -263,7 +261,8 @@ fun DetailHeader(
             onClick = { goBack() },
             modifier = Modifier
                 .alpha(0.8f),
-            colors = IconButtonDefaults.filledIconButtonColors().copy(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            colors = IconButtonDefaults.filledIconButtonColors()
+                .copy(containerColor = MaterialTheme.colorScheme.primaryContainer)
 
         ) {
             Icon(

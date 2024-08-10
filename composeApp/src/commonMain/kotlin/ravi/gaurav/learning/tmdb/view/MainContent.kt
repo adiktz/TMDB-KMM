@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -41,7 +43,6 @@ import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-import ravi.gaurav.learning.tmdb.domain.DEFAULT
 import ravi.gaurav.learning.tmdb.domain.Movie
 import ravi.gaurav.learning.tmdb.navigation.MainComponent
 import ravi.gaurav.learning.tmdb.navigation.MainEvent
@@ -49,7 +50,7 @@ import ravi.gaurav.learning.tmdb.util.Constants
 import ravi.gaurav.learning.tmdb.util.OS
 import ravi.gaurav.learning.tmdb.util.RatingBar
 import ravi.gaurav.learning.tmdb.util.SystemInsetsHelper
-import ravi.gaurav.learning.tmdb.util.safeHeaderPadding
+import ravi.gaurav.learning.tmdb.util.safeCutOutPadding
 
 
 @Composable
@@ -133,7 +134,9 @@ fun MainContent(
                         "Popular Movies",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .safeHeaderPadding()
+                            .wrapContentHeight()
+                            .statusBarsPadding()
+                            .safeCutOutPadding()
                     )
                 }
 
@@ -184,15 +187,18 @@ private fun Header(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Row(
         modifier = modifier,
-        verticalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
             textAlign = TextAlign.Left
         )
     }
